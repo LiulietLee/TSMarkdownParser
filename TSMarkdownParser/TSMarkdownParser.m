@@ -208,6 +208,12 @@ typedef NSFont UIFont;
                 [attributedString addAttributes:weakParser.strongAttributes range:range];
             }];
             
+            [defaultParser addCrossLineParsingWithFormattingBlock:^(NSMutableAttributedString *attributedString, NSRange range) {
+                [attributedString addAttribute:NSStrikethroughStyleAttributeName
+                                        value:@2
+                                        range:range];
+            }];
+            
             [defaultParser addEmphasisParsingWithFormattingBlock:^(NSMutableAttributedString *attributedString, NSRange range) {
                 [attributedString addAttributes:weakParser.emphasisAttributes range:range];
             }];
@@ -252,6 +258,7 @@ typedef NSFont UIFont;
         // inline enclosed regex
         static NSString *const TSMarkdownMonospaceRegex     = @"(`+)(\\s*.*?[^`]\\s*)(\\1)(?!`)";
         static NSString *const TSMarkdownStrongRegex        = @"(\\*\\*|__)(.+?)(\\1)";
+        static NSString *const TSMarkdownCrossLineRegex     = @"(\\~\\~|__)(.+?)(\\1)";
         static NSString *const TSMarkdownEmRegex            = @"(\\*|_)(.+?)(\\1)";
         
 #pragma mark escaping parsing
@@ -453,6 +460,10 @@ typedef NSFont UIFont;
                 
                 - (void)addStrongParsingWithFormattingBlock:(void(^)(NSMutableAttributedString *attributedString, NSRange range))formattingBlock {
                     [self addEnclosedParsingWithPattern:TSMarkdownStrongRegex formattingBlock:formattingBlock];
+                }
+                
+                - (void)addCrossLineParsingWithFormattingBlock:(void(^)(NSMutableAttributedString *attributedString, NSRange range))formattingBlock {
+                    [self addEnclosedParsingWithPattern:TSMarkdownCrossLineRegex formattingBlock:formattingBlock];
                 }
                 
                 - (void)addEmphasisParsingWithFormattingBlock:(TSMarkdownParserFormattingBlock)formattingBlock {
